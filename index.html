@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050a12">
+<title>TAIFUN TUNER</title>
+<style>
+:root{--bg:#050a12;--card:#0b1422;--card2:#101d2f;--line:#1b3048;--blue:#1683ff;--cyan:#00d9ff;--text:#f4f7fb;--muted:#8da0b7;--red:#ff405d;--green:#42e59a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#10294a 0,#050a12 42%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100vh}
+.app{max-width:460px;margin:auto;min-height:100vh;padding:env(safe-area-inset-top) 14px calc(78px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 2px 12px}.brand{font-weight:900;font-style:italic;letter-spacing:2px;font-size:25px}.brand span{display:block;color:#1592ff;font-size:16px;letter-spacing:5px;margin-top:-4px}.icon{background:#101d2d;border:1px solid #20354d;border-radius:12px;color:#dce9f8;padding:9px 11px}
+.status{background:linear-gradient(135deg,#0b1625,#0a111d);border:1px solid var(--line);border-radius:15px;padding:13px 14px;display:flex;align-items:center;gap:12px}.linkdot{width:12px;height:12px;border-radius:50%;background:#ff405d;box-shadow:0 0 12px #ff405d}.status small{color:var(--muted);display:block}.status b{color:#ff5067}
+.gauge{margin:18px auto 12px;width:245px;height:245px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(from 220deg,#0879ff 0 35%,#16c7ff 35% 63%,#ffb52d 63% 86%,#ff3f58 86% 100%);padding:9px;box-shadow:0 0 35px #0077ff44}.gauge:after{content:"";position:absolute}.ginner{width:100%;height:100%;border-radius:50%;background:#07101c;border:2px solid #193654;display:flex;align-items:center;justify-content:center;flex-direction:column}.rpm{font-size:48px;font-weight:800}.rpm small{font-size:14px;color:#20aaff;display:block;text-align:center}.tick{color:#8499af;font-size:12px;margin-bottom:7px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{background:linear-gradient(145deg,#0d1928,#0a111c);border:1px solid #182b41;border-radius:13px;padding:11px}.metric small{color:var(--muted)}.metric strong{font-size:22px;display:block;margin-top:3px}.green{color:#55e89d}.cyan{color:#24cfff}.orange{color:#ffc34d}.purple{color:#d26dff}
+.btn{width:100%;border:0;border-radius:13px;padding:14px;margin-top:12px;background:linear-gradient(135deg,#0877ff,#12a3ff);color:white;font-weight:800;font-size:15px;box-shadow:0 8px 25px #007aff44}.btn.secondary{background:#101d2d;border:1px solid #223b56;box-shadow:none}
+.page{display:none}.page.active{display:block}.title{font-size:22px;font-weight:800;margin:10px 0 14px}.sub{color:var(--muted);font-size:13px}.tabs{display:flex;background:#0b1523;padding:4px;border-radius:11px;margin-bottom:12px}.tabs button{flex:1;border:0;background:transparent;color:#7f94ab;padding:9px;border-radius:8px}.tabs button.active{background:#087aff;color:#fff}
+.mapwrap{overflow:auto;border:1px solid #1a3048;border-radius:12px}.map{border-collapse:collapse;width:720px;font-size:11px}.map th,.map td{padding:7px;text-align:center;border:1px solid #20344a}.map th{background:#0c1928;color:#9eb1c6}.cell{color:#06101b;font-weight:800;min-width:44px}.c1{background:#4fc3ff}.c2{background:#61d7c2}.c3{background:#9de65e}.c4{background:#ffd24a}.c5{background:#ff9a45}.c6{background:#ff596d}
+.valuebox{display:flex;gap:8px;margin-top:12px}.valuebox input{flex:1;background:#0a1421;border:1px solid #29435f;color:white;border-radius:10px;padding:11px}.valuebox button{background:#087cff;color:#fff;border:0;border-radius:10px;padding:0 18px;font-weight:700}
+.chart{height:190px;border:1px solid #1a3048;border-radius:13px;background:#091321;padding:12px;position:relative;overflow:hidden}.chart svg{width:100%;height:100%}.legend{display:flex;gap:15px;font-size:11px;color:#aab9ca;margin:9px 2px}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}
+.connectcard{background:#0b1624;border:1px solid #1c334b;border-radius:14px;padding:14px;margin-bottom:10px}.method{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.method button{background:#101f31;border:1px solid #213a55;color:#b9c8d8;border-radius:10px;padding:13px 5px}.method button.active{border-color:#1683ff;background:#0b4f9f;color:#fff}.device{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid #1b2e43}.signal{color:#42e59a}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:rgba(5,10,18,.94);backdrop-filter:blur(18px);border-top:1px solid #1a2d42;display:flex;justify-content:center;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:5}.nav{max-width:460px;width:100%;display:grid;grid-template-columns:repeat(5,1fr)}.nav button{background:none;border:0;color:#71869e;font-size:10px;padding:5px}.nav button.active{color:#1a8dff}.nav i{display:block;font-style:normal;font-size:20px;margin-bottom:2px}
+.note{font-size:11px;color:#71869e;line-height:1.5;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand">TAIFUN<span>TUNER</span></div><button class="icon" onclick="show('settings')">⚙️</button></header>
+
+<section id="dashboard" class="page active">
+<div class="status"><div class="linkdot" id="dot"></div><div><small>ECU Status</small><b id="status">DISCONNECTED</b></div><div style="margin-left:auto">›</div></div>
+<div class="gauge"><div class="ginner"><div class="tick">×1000</div><div class="rpm" id="rpm">0</div><div class="rpm"><small>RPM</small></div></div></div>
+<div class="grid">
+<div class="metric"><small>🟢 TPS</small><strong class="green" id="tps">0.0%</strong></div>
+<div class="metric"><small>🔵 AFR</small><strong class="cyan" id="afr">14.7</strong></div>
+<div class="metric"><small>🔴 Coolant</small><strong class="orange" id="coolant">27°C</strong></div>
+<div class="metric"><small>🟣 Battery</small><strong class="purple" id="battery">12.4 V</strong></div>
+</div>
+<button class="btn" onclick="connect()">⛓ CONNECT ECU</button>
+<button class="btn secondary" onclick="simulate()">▶ DEMO LIVE DATA</button>
+<p class="note">โหมด Demo ใช้ข้อมูลจำลองเท่านั้น ยังไม่เขียนค่าลง ECU</p>
+</section>
+
+<section id="fuel" class="page">
+<div class="title">Fuel Map <span class="sub">RPM / TPS</span></div><div class="sub" style="margin-bottom:10px">แตะตัวเลขเพื่อแก้ค่า • บันทึกไว้ในเครื่อง</div>
+<div class="tabs"><button class="active">2D Table</button><button>3D View</button></div>
+<div class="mapwrap"><table class="map" id="fuelmap"></table></div>
+<div class="valuebox"><input id="mapval" value="92"><button onclick="applyMap()">Save Map</button></div>
+<button class="btn secondary" onclick="resetMap('fuelmap',70,1)">↺ Reset Fuel Map</button>
+<p class="note">ต้นแบบนี้แก้ค่าตารางในหน้าจอเท่านั้น ยังไม่ได้ส่งค่าไปยัง ECU จริง</p>
+</section>
+
+<section id="ignition" class="page">
+<div class="title">Ignition Map <span class="sub">RPM / Load</span></div><div class="sub" style="margin-bottom:10px">แตะตัวเลขเพื่อแก้ค่า • บันทึกไว้ในเครื่อง</div>
+<div class="tabs"><button class="active">2D Table</button><button>3D View</button></div>
+<div class="mapwrap"><table class="map" id="ignmap"></table></div>
+<div class="valuebox"><input id="ignval" value="32"><button onclick="applyIgn()">Save Map</button></div>
+<button class="btn secondary" onclick="resetMap('ignmap',12,2)">↺ Reset Ignition Map</button>
+<p class="note">ใช้สำหรับต้นแบบ UI เท่านั้น ไม่ควรนำค่าจุดระเบิดไปใช้กับเครื่องยนต์จริงโดยไม่มีการตรวจสอบและอุปกรณ์ที่เหมาะสม</p>
+</section>
+
+<section id="log" class="page">
+<div class="title">Data Log</div>
+<div class="tabs"><button class="active">Live</button><button>Log File</button><button>Replay</button></div>
+<div class="chart"><svg viewBox="0 0 400 170" preserveAspectRatio="none"><polyline id="line1" fill="none" stroke="#ff405d" stroke-width="3" points="0,125 30,75 60,100 90,55 120,85 150,45 180,72 210,30 240,60 270,38 300,68 330,25 360,50 400,15"/><polyline fill="none" stroke="#42e59a" stroke-width="2" points="0,145 40,120 80,130 120,105 160,120 200,85 240,110 280,80 320,95 360,70 400,80"/></svg></div>
+<div class="legend"><span><i class="dot" style="background:#ff405d"></i>RPM</span><span><i class="dot" style="background:#42e59a"></i>TPS</span></div>
+<div class="connectcard"><div class="device"><span>🔴 RPM</span><b id="lrpm">5,250 rpm</b></div><div class="device"><span>🟢 TPS</span><b id="ltps">32.5 %</b></div><div class="device"><span>🔵 AFR</span><b>13.8</b></div><div class="device"><span>🟠 Coolant</span><b>82 °C</b></div></div>
+</section>
+
+<section id="connect" class="page">
+<div class="title">Connect ECU</div><div class="sub" style="margin-bottom:14px">เลือกช่องทางการเชื่อมต่อ</div>
+<div class="method"><button class="active">ᛒ<br>Bluetooth</button><button>◉<br>Wi‑Fi</button><button>↕<br>USB</button></div>
+<div class="connectcard" style="margin-top:14px"><b>Available Devices</b>
+<div class="device">Giorno ECU (BLE)<span class="signal">▮▮▮ ›</span></div>
+<div class="device">J&T Tuner<span class="signal">▮▮ ›</span></div>
+<div class="device">Honda ECU<span class="signal">▮ ›</span></div>
+</div><button class="btn" onclick="connect()">↻ Scan for Devices</button>
+<p class="note">อุปกรณ์ในหน้านี้เป็นตัวอย่างสำหรับ UI ยังไม่มีการเชื่อมต่อ ECU จริง</p>
+</section>
+
+<section id="settings" class="page">
+<div class="title">Settings</div>
+<div class="connectcard"><b>🏍️ Honda Giorno 63</b><div class="sub">185cc | หัวนูน | Cam</div></div>
+<div class="connectcard"><div class="device">⚙️ ECU Settings <span>›</span></div><div class="device">🏍️ Vehicle Setup <span>›</span></div><div class="device">💾 Map Management <span>›</span></div><div class="device">🌐 Language <span>ไทย ›</span></div><div class="device">◉ Units <span>Metric ›</span></div><div class="device">ⓘ About App <span>v0.1 Demo ›</span></div></div>
+</section>
+</div>
+
+<nav class="bottom"><div class="nav">
+<button class="active" onclick="show('dashboard',this)"><i>⌂</i>Dashboard</button>
+<button onclick="show('fuel',this)"><i>▦</i>Fuel Map</button>
+<button onclick="show('ignition',this)"><i>ϟ</i>Ignition</button>
+<button onclick="show('log',this)"><i>▤</i>Data Log</button>
+<button onclick="show('connect',this)"><i>⌁</i>Connect</button>
+</div></nav>
+
+<script>
+const rpms=[1000,1500,2000,2500,3000,3500,4000,4500,5000,6000,7000,8000], loads=[0,10,20,40,60,80,100];
+function makeMap(id,base,step){
+ let saved=JSON.parse(localStorage.getItem(id)||'null');
+ let t='<tr><th>RPM</th>'+loads.map(x=>'<th>'+x+'</th>').join('')+'</tr>';
+ rpms.forEach((r,i)=>{
+   t+='<tr><th>'+r+'</th>';
+   loads.forEach((x,j)=>{
+     let v=saved?.[i]?.[j] ?? (base+i*step+j*2);
+     let cls='c'+Math.min(6,Math.floor((v-base)/7)+1);
+     t+=`<td class="cell ${cls}" contenteditable="true" inputmode="decimal"
+       onclick="selectCell(this)" oninput="colorCell(this,${base})">${v}</td>`;
+   });
+   t+='</tr>'
+ });
+ document.getElementById(id).innerHTML=t
+}
+function selectCell(el){
+ document.querySelectorAll('.cell').forEach(c=>c.style.outline='none');
+ el.style.outline='2px solid #fff';
+ let v=el.textContent.trim();
+ let input=document.getElementById(el.closest('#ignmap')?'ignval':'mapval');
+ input.value=v;
+}
+function colorCell(el,base){
+ let v=parseFloat(el.textContent)||0;
+ el.className='cell c'+Math.min(6,Math.max(1,Math.floor((v-base)/7)+1));
+}
+function saveMap(id){
+ let rows=[...document.querySelectorAll('#'+id+' tr')].slice(1);
+ let data=rows.map(row=>[...row.querySelectorAll('.cell')].map(c=>parseFloat(c.textContent)||0));
+ localStorage.setItem(id,JSON.stringify(data));
+}
+function applyMap(){
+ saveMap('fuelmap');
+ alert('บันทึก Fuel Map ลงในเครื่องแล้ว');
+}
+function applyIgn(){
+ saveMap('ignmap');
+ alert('บันทึก Ignition Map ลงในเครื่องแล้ว');
+}
+function resetMap(id,base,step){
+ localStorage.removeItem(id); makeMap(id,base,step);
+}
+makeMap('fuelmap',70,1);makeMap('ignmap',12,2);
+function show(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active')}
+function connect(){document.getElementById('status').textContent='CONNECTED';document.getElementById('status').style.color='#42e59a';document.getElementById('dot').style.background='#42e59a';document.getElementById('dot').style.boxShadow='0 0 12px #42e59a';show('dashboard',document.querySelector('.nav button'))}
+function simulate(){let n=0;setInterval(()=>{n++;let r=2500+Math.round(Math.sin(n/5)*1200+Math.random()*500);document.getElementById('rpm').textContent=r.toLocaleString();document.getElementById('tps').textContent=(18+Math.random()*22).toFixed(1)+'%';document.getElementById('afr').textContent=(13.4+Math.random()*1.2).toFixed(1);document.getElementById('coolant').textContent=Math.round(70+Math.random()*12)+'°C';document.getElementById('battery').textContent=(12.1+Math.random()*.6).toFixed(1)+' V';document.getElementById('lrpm').textContent=r.toLocaleString()+' rpm';document.getElementById('ltps').textContent=document.getElementById('tps').textContent},700)}
+</script>
+</body></html>

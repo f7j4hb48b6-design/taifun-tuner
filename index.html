@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>TAIFUN TUNER V3</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#050a12;color:#eaf4ff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.app{max-width:900px;margin:auto;min-height:100vh;background:linear-gradient(180deg,#07111f,#050a12)}
+header{position:sticky;top:0;z-index:5;background:rgba(5,10,18,.94);backdrop-filter:blur(12px);padding:18px 16px 12px;border-bottom:1px solid #18304a}
+.brand{font-size:24px;font-weight:800;letter-spacing:1px}.sub{color:#6e9ac3;font-size:12px;margin-top:3px}
+nav{display:flex;gap:7px;overflow:auto;padding:10px 12px;border-bottom:1px solid #14283d}
+nav button{white-space:nowrap;background:#0b1726;color:#8fb5d8;border:1px solid #18334d;border-radius:12px;padding:9px 12px}
+nav button.active{background:#0879d1;color:white;border-color:#18a4ff}
+main{padding:14px 14px 90px}.page{display:none}.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card{background:#0a1422;border:1px solid #18304a;border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:0 8px 25px #0004}
+.metric{font-size:28px;font-weight:750;margin-top:5px}.label{font-size:12px;color:#7598b8}.unit{font-size:12px;color:#6e9ac3}
+h2{font-size:19px;margin:4px 0 12px}h3{font-size:15px;margin:2px 0 10px}
+button{cursor:pointer}.primary{background:#0879d1;color:#fff;border:0;border-radius:11px;padding:11px 14px;font-weight:650}.danger{background:#b52d3c;color:#fff;border:0;border-radius:11px;padding:11px 14px;font-weight:650}.ghost{background:#0d1c2d;color:#a8c9e5;border:1px solid #1b3853;border-radius:11px;padding:10px 13px}
+.status{display:inline-flex;align-items:center;gap:7px;color:#8eb3d3;font-size:13px}.dot{width:9px;height:9px;border-radius:50%;background:#647b91}.dot.ok{background:#32d583;box-shadow:0 0 10px #32d583}
+table{border-collapse:collapse;width:100%;font-size:11px;overflow:hidden;border-radius:10px}th,td{border:1px solid #1c3a55;padding:7px;text-align:center}th{background:#0d2033;color:#8fb8da}td[contenteditable=true]{background:#071421;min-width:42px;outline:none}td[contenteditable=true]:focus{box-shadow:inset 0 0 0 2px #159cff}
+.badge{display:inline-block;padding:4px 8px;border-radius:8px;background:#172a3e;color:#8eb7da;font-size:11px}.okbadge{background:#0c3a2a;color:#55dda1}.warnbadge{background:#423415;color:#ffd36b}
+.dtc{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border:1px solid #1a3853;background:#081522;border-radius:12px;margin:8px 0}.code{font-weight:800;color:#ffcc67}.desc{font-size:13px}.muted{color:#7194b3;font-size:12px}
+.log{height:170px;background:#07121e;border:1px solid #18304a;border-radius:12px;position:relative;overflow:hidden}.log:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 33px,#16314a 34px),repeating-linear-gradient(90deg,transparent 0 59px,#16314a 60px);opacity:.45}.line{position:absolute;left:4%;right:4%;top:45%;height:2px;background:#17a3ff;transform:rotate(-5deg);box-shadow:0 0 7px #17a3ff}
+input,select{width:100%;background:#071421;color:#eaf4ff;border:1px solid #1b3853;border-radius:10px;padding:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}.note{padding:11px;border-left:3px solid #159cff;background:#081522;color:#90b3d0;font-size:12px;border-radius:7px}
+footer{position:fixed;bottom:0;left:0;right:0;background:#07111fdd;border-top:1px solid #17304a;padding:9px;text-align:center;color:#567895;font-size:10px;backdrop-filter:blur(10px)}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}main{padding:20px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand">TAIFUN TUNER <span class="badge">V3</span></div><div class="sub">Honda Giorno 125 ABS • Diagnostic & Tuning Interface</div></header>
+<nav id="nav">
+<button class="active" data-page="dash">Dashboard</button><button data-page="dtc">DTC</button><button data-page="live">Live Data</button><button data-page="fuel">Fuel Map</button><button data-page="ign">Ignition</button><button data-page="connect">ECU</button><button data-page="settings">Settings</button>
+</nav>
+<main>
+<section id="dash" class="page active">
+<h2>Dashboard</h2>
+<div class="grid">
+<div class="card"><div class="label">RPM</div><div class="metric" id="rpm">1,650</div><div class="unit">rpm</div></div>
+<div class="card"><div class="label">TPS</div><div class="metric" id="tps">3.8</div><div class="unit">%</div></div>
+<div class="card"><div class="label">Coolant</div><div class="metric" id="temp">82</div><div class="unit">°C</div></div>
+<div class="card"><div class="label">Battery</div><div class="metric" id="volt">13.9</div><div class="unit">V</div></div>
+</div>
+<div class="card"><div class="status"><span class="dot" id="dot"></span><span id="connText">ECU not connected</span></div><hr style="border-color:#14283d;border-width:1px 0 0;margin:13px 0"><button class="primary" onclick="show('connect')">Connect ECU</button> <button class="ghost" onclick="demo()">Demo Live Data</button></div>
+<div class="note">V3 includes a real diagnostic interface structure. DTC communication is locked until a compatible Honda interface/protocol is connected; this prevents sending unsupported commands to the ECU.</div>
+</section>
+
+<section id="dtc" class="page">
+<h2>Diagnostic Trouble Codes</h2>
+<div class="card"><div class="status"><span class="dot" id="dtcDot"></span><span id="dtcStatus">Ready to scan</span></div><div class="row" style="margin-top:12px"><button class="primary" onclick="scanDTC()">🔍 Scan DTC</button><button class="danger" onclick="clearDTC()">🧹 Clear DTC</button></div></div>
+<div class="card"><h3>Current DTC</h3><div id="dtcList"><div class="muted">No scan performed.</div></div></div>
+<div class="card"><h3>Diagnostic notes</h3><div class="note">Clear DTC only clears stored diagnostic information when the ECU/interface supports that operation. It does not repair the cause of a fault.</div></div>
+</section>
+
+<section id="live" class="page">
+<h2>Live Data</h2><div class="card"><div class="log"><div class="line" id="wave"></div></div></div>
+<div class="grid">
+<div class="card"><div class="label">RPM</div><div class="metric" id="lrpm">1,650</div></div>
+<div class="card"><div class="label">TPS</div><div class="metric" id="ltps">3.8%</div></div>
+<div class="card"><div class="label">Coolant</div><div class="metric" id="ltemp">82°C</div></div>
+<div class="card"><div class="label">Battery</div><div class="metric" id="lvolt">13.9V</div></div>
+</div>
+</section>
+
+<section id="fuel" class="page"><h2>Fuel Map</h2><div class="card"><div class="row"><button class="primary" onclick="saveMap('fuel')">Save Map</button><button class="ghost" onclick="resetMap('fuel')">Reset</button></div><div style="overflow:auto;margin-top:12px"><table id="fuelTable"></table></div></div><div class="note">Map values are stored locally in this web app. They are not written to the ECU.</div></section>
+<section id="ign" class="page"><h2>Ignition Map</h2><div class="card"><div class="row"><button class="primary" onclick="saveMap('ign')">Save Map</button><button class="ghost" onclick="resetMap('ign')">Reset</button></div><div style="overflow:auto;margin-top:12px"><table id="ignTable"></table></div></div><div class="note">Ignition values are prototype/local data until the correct Honda ECU write protocol is implemented.</div></section>
+
+<section id="connect" class="page">
+<h2>ECU Connection</h2><div class="card"><div class="status"><span class="dot" id="cdot"></span><span id="cstatus">Disconnected</span></div></div>
+<div class="card"><h3>Vehicle</h3><label class="muted">Model</label><input value="Honda Giorno 125 ABS" readonly><br><br><label class="muted">Target model year</label><select><option>2023–2024</option></select></div>
+<div class="card"><h3>Interface</h3><div class="row"><button class="ghost" onclick="selectInterface('BLE')">Bluetooth LE</button><button class="ghost" onclick="selectInterface('Wi‑Fi')">Wi‑Fi</button><button class="ghost" onclick="selectInterface('USB')">USB</button></div><p class="muted" id="iface">No interface selected</p></div>
+<div class="card"><button class="primary" onclick="connectDemo()">Connect / Test Interface</button></div>
+<div class="note">iPhone Safari does not provide a general-purpose way to talk directly to every BLE Honda diagnostic adapter. A supported native bridge or compatible Wi‑Fi/HTTP/WebSocket adapter may be required for actual ECU communication.</div>
+</section>
+
+<section id="settings" class="page">
+<h2>Settings</h2><div class="card"><h3>App</h3><label class="muted">Vehicle profile</label><input value="Honda Giorno 125 ABS" readonly><br><br><button class="ghost" onclick="localStorage.clear();location.reload()">Reset local app data</button></div>
+<div class="card"><h3>About</h3><p class="muted">TAIFUN TUNER V3 — diagnostic/tuning UI prototype for Honda Giorno 125 ABS.</p></div>
+</section>
+</main><footer>TAIFUN TUNER V3 • Simulation / interface layer until compatible ECU protocol is configured</footer>
+</div>
+<script>
+const pages=[...document.querySelectorAll('.page')];
+function show(id){pages.forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo(0,0)}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.page));
+
+const fuel0=[0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34];
+const ign0=[0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34];
+function makeTable(id,type){
+ let t=document.getElementById(id), rows=type==='fuel'?fuel0:ign0;
+ t.innerHTML='<tr><th>RPM / TPS</th>'+rows.map(x=>'<th>'+x+'</th>').join('')+'</tr>';
+ for(let r=0;r<8;r++){let tr=document.createElement('tr');tr.innerHTML='<th>'+(1000+r*1000)+'</th>';
+ for(let c=0;c<rows.length;c++){let key=type+r+'_'+c, val=localStorage.getItem(key);if(val===null)val=type==='fuel'?(0+(c%5)):((r*2)-(c%3));tr.innerHTML+='<td contenteditable="true" data-key="'+key+'">'+val+'</td>'}t.appendChild(tr)}
+}
+function saveMap(type){document.querySelectorAll('#'+type+'Table td').forEach(td=>localStorage.setItem(td.dataset.key,td.innerText.trim()));alert(type==='fuel'?'Fuel Map saved locally.':'Ignition Map saved locally.')}
+function resetMap(type){document.querySelectorAll('#'+type+'Table td').forEach(td=>localStorage.removeItem(td.dataset.key));makeTable(type+'Table',type)}
+makeTable('fuelTable','fuel');makeTable('ignTable','ign');
+
+function scanDTC(){
+ const s=document.getElementById('dtcStatus'), list=document.getElementById('dtcList'), dot=document.getElementById('dtcDot');
+ s.textContent='Scanning interface…';dot.className='dot';
+ setTimeout(()=>{s.textContent='Interface not connected';list.innerHTML='<div class="dtc"><div><div class="code">NO ECU RESPONSE</div><div class="desc">Connect a supported Honda diagnostic interface to read actual DTCs.</div></div><span class="warnbadge">WAITING</span></div>';},800)
+}
+function clearDTC(){alert('ECU clear command is not sent because no compatible Honda ECU protocol/interface is connected.');}
+function selectInterface(x){document.getElementById('iface').textContent='Selected interface: '+x}
+function connectDemo(){document.getElementById('cstatus').textContent='Interface test mode';document.getElementById('cdot').className='dot ok';document.getElementById('connText').textContent='Interface test mode — ECU not verified';document.getElementById('dot').className='dot ok'}
+let timer;
+function demo(){
+ clearInterval(timer);let n=0;timer=setInterval(()=>{n++;let rpm=1500+Math.round(Math.sin(n/4)*500+Math.random()*80),t=(3+Math.random()*2).toFixed(1),temp=(80+Math.random()*4).toFixed(0),v=(13.6+Math.random()*.5).toFixed(1);
+ ['rpm','lrpm'].forEach(x=>document.getElementById(x).textContent=rpm.toLocaleString());['tps','ltps'].forEach(x=>document.getElementById(x).textContent=t+(x==='tps'?'':'%'));['temp','ltemp'].forEach(x=>document.getElementById(x).textContent=temp+(x==='temp'?'':'°C'));['volt','lvolt'].forEach(x=>document.getElementById(x).textContent=v+(x==='volt'?'':'V'));document.getElementById('wave').style.transform='rotate('+(Math.sin(n/3)*8)+'deg)'},500)
+}
+</script>
+</body></html>
